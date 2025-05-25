@@ -19,8 +19,9 @@
 #include <autoware/motion_utils/trajectory/trajectory.hpp>
 #include <autoware/velocity_smoother/smoother/analytical_jerk_constrained_smoother/analytical_jerk_constrained_smoother.hpp>
 #include <autoware_lanelet2_extension/utility/message_conversion.hpp>
-#include <autoware_utils/ros/wait_for_param.hpp>
-#include <autoware_utils/transform/transforms.hpp>
+#include <autoware_utils_pcl/transforms.hpp>
+#include <autoware_utils_rclcpp/parameter.hpp>
+#include <tf2_eigen/tf2_eigen.hpp>
 
 #include <diagnostic_msgs/msg/diagnostic_status.hpp>
 #include <visualization_msgs/msg/marker_array.hpp>
@@ -29,15 +30,9 @@
 #include <pcl/common/transforms.h>
 #include <pcl_conversions/pcl_conversions.h>
 
-#include <string>
-#ifdef ROS_DISTRO_GALACTIC
-#include <tf2_eigen/tf2_eigen.h>
-#else
-#include <tf2_eigen/tf2_eigen.hpp>
-#endif
-
 #include <functional>
 #include <memory>
+#include <string>
 #include <vector>
 
 namespace autoware::behavior_velocity_planner
@@ -105,8 +100,8 @@ BehaviorVelocityPlannerNode::BehaviorVelocityPlannerNode(const rclcpp::NodeOptio
     planner_manager_.launchScenePlugin(*this, name);
   }
 
-  logger_configure_ = std::make_unique<autoware_utils::LoggerLevelConfigure>(this);
-  published_time_publisher_ = std::make_unique<autoware_utils::PublishedTimePublisher>(this);
+  logger_configure_ = std::make_unique<autoware_utils_logging::LoggerLevelConfigure>(this);
+  published_time_publisher_ = std::make_unique<autoware_utils_debug::PublishedTimePublisher>(this);
 }
 
 void BehaviorVelocityPlannerNode::onLoadPlugin(
@@ -153,7 +148,7 @@ void BehaviorVelocityPlannerNode::processNoGroundPointCloud(
   Eigen::Affine3f affine = tf2::transformToEigen(transform.transform).cast<float>();
   pcl::PointCloud<pcl::PointXYZ>::Ptr pc_transformed(new pcl::PointCloud<pcl::PointXYZ>);
   if (!pc.empty()) {
-    autoware_utils::transform_pointcloud(pc, *pc_transformed, affine);
+    autoware_utils_pcl::transform_pointcloud(pc, *pc_transformed, affine);
   }
 
   planner_data_.no_ground_pointcloud = pc_transformed;
