@@ -13,3 +13,6 @@ log/
 
 # Python
 *.pyc
+
+# vcs
+external_deps/
