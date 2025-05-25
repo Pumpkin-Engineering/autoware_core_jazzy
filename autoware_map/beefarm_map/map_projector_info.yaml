@@ -1,0 +1,7 @@
+# map_projector_info.yaml
+projector_type: LocalCartesianUTM
+vertical_datum: WGS84
+map_origin:
+  # UTM: 512700.00, 6905950.00
+  latitude: -27.971481956 # [deg]
+  longitude: 153.1291327 # [deg]
