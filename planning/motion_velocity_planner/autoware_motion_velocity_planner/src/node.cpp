@@ -233,12 +233,19 @@ MotionVelocityPlannerNode::process_no_ground_pointcloud(
     return std::nullopt;
   }
 
-  pcl::PointCloud<pcl::PointXYZ> pc;
-  pcl::fromROSMsg(*msg, pc);
-
   Eigen::Affine3f affine = tf2::transformToEigen(transform.transform).cast<float>();
+
+  pcl::PointCloud<pcl::PointXYZ> pc;
   pcl::PointCloud<pcl::PointXYZ>::Ptr pc_transformed(new pcl::PointCloud<pcl::PointXYZ>);
-  if (!pc.empty()) autoware_utils_pcl::transform_pointcloud(pc, *pc_transformed, affine);
+
+  if (msg->data.size() > 0) {
+    pcl::fromROSMsg(*msg, pc);
+  } else {
+    RCLCPP_INFO_ONCE(get_logger(), "no_ground_pointcloud has been received but is empty");
+  }
+  if (!pc.empty()) {
+    autoware_utils_pcl::transform_pointcloud(pc, *pc_transformed, affine);
+  }
   return *pc_transformed;
 }
 
