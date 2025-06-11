@@ -190,17 +190,18 @@ NDTScanMatcher::NDTScanMatcher(const rclcpp::NodeOptions & options)
     this->create_publisher<visualization_msgs::msg::MarkerArray>(
       "monte_carlo_initial_pose_marker", 10);
 
+  const auto qos = rclcpp::ServiceQoS();
   service_ =
     this->create_service<autoware_internal_localization_msgs::srv::PoseWithCovarianceStamped>(
       "ndt_align_srv",
       std::bind(
         &NDTScanMatcher::service_ndt_align, this, std::placeholders::_1, std::placeholders::_2),
-      rclcpp::ServicesQoS().get_rmw_qos_profile(), sensor_callback_group);
+      qos, sensor_callback_group);
   service_trigger_node_ = this->create_service<std_srvs::srv::SetBool>(
     "trigger_node_srv",
     std::bind(
       &NDTScanMatcher::service_trigger_node, this, std::placeholders::_1, std::placeholders::_2),
-    rclcpp::ServicesQoS().get_rmw_qos_profile(), sensor_callback_group);
+    qos, sensor_callback_group);
 
   ndt_ptr_->setParams(param_.ndt);
 
