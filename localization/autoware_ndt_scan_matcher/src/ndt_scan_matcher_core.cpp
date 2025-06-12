@@ -190,7 +190,7 @@ NDTScanMatcher::NDTScanMatcher(const rclcpp::NodeOptions & options)
     this->create_publisher<visualization_msgs::msg::MarkerArray>(
       "monte_carlo_initial_pose_marker", 10);
 
-  const auto qos = rclcpp::ServiceQoS();
+  const auto qos = rclcpp::ServicesQoS();
   service_ =
     this->create_service<autoware_internal_localization_msgs::srv::PoseWithCovarianceStamped>(
       "ndt_align_srv",

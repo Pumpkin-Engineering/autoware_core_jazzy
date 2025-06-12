@@ -80,7 +80,7 @@ MapHeightFitter::Impl::Impl(rclcpp::Node * node) : tf2_listener_(tf2_buffer_), n
         }
 
         if (partial_load) {
-          const auto qos = rclcpp::ServiceQoS();
+          const auto qos = rclcpp::ServicesQoS();
           group_ = node_->create_callback_group(rclcpp::CallbackGroupType::MutuallyExclusive);
           cli_pcd_map_ = node_->create_client<autoware_map_msgs::srv::GetPartialPointCloudMap>(
             "~/partial_map_load", qos, group_);
